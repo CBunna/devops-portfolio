@@ -2,6 +2,16 @@ import React from 'react'
 import {  Server, ChevronDown,  } from 'lucide-react';
 
 const Hero = () => {
+
+  const handleDownloadCV = () => {
+    const link = document.createElement('a');
+    link.href = '/cv/resume_bunna.pdf'; 
+    link.download = 'Bunna-DevOps-Resume.pdf'; 
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900"></div>
@@ -30,10 +40,14 @@ const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <button className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300">
+          <button 
+           onClick={() => document.getElementById('projects').scrollIntoView({ behavior: 'smooth' })}
+          className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300">
             View My Work
           </button>
-          <button className="px-8 py-3 border border-blue-400 text-blue-400 rounded-lg font-semibold hover:bg-blue-400 hover:text-gray-900 transition-all duration-300">
+          <button 
+           onClick={handleDownloadCV}
+          className="px-8 py-3 border border-blue-400 text-blue-400 rounded-lg font-semibold hover:bg-blue-400 hover:text-gray-900 transition-all duration-300">
             Download Resume
           </button>
         </div>

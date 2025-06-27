@@ -4,24 +4,24 @@ import { ExternalLink } from 'lucide-react';
 const Projects = () => {
   const projects = [
     {
-      title: "Personal Website CI/CD",
+      title: "Personal Website with CI/CD Pipeline",
       description: "Automated deployment pipeline for this portfolio website using GitHub Actions and AWS S3.",
-      tech: ["GitHub Actions", "AWS S3", "CloudFront"],
+      tech: ["GitHub Actions", "AWS S3"],
       status: "Completed",
-      link: "#"
+      link: "https://github.com/CBunna/devops-portfolio"
     },
     {
-      title: "Docker Learning Lab",
-      description: "Containerized multiple applications and created a multi-service environment using Docker Compose.",
-      tech: ["Docker", "Docker Compose", "NGINX"],
-      status: "Completed",
+      title: "Infrastructure as Code (IaC) Project",
+      description: "Create reusable modules for different environments (dev/staging/prod)",
+      tech: ["Terraform", "Docker Compose", "NGINX"],
+      status: "Planning",
       link: "#"
     },
     {
       title: "Infrastructure as Code",
       description: "Learning Terraform by provisioning AWS resources and managing infrastructure declaratively.",
       tech: ["Terraform", "AWS", "Infrastructure as Code"],
-      status: "In Progress",
+      status: "Planning",
       link: "#"
     },
     {
