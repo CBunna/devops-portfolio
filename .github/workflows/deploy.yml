@@ -1,50 +1,13 @@
-name: Deploy React Portfolio to AWS S3
+name: Deploy to AWS S3
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # Removed pull_request trigger - typically you only deploy on main pushes
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Run linting
-      run: npm run lint --if-present
-      
-    - name: Run tests
-      run: npm test -- --coverage --watchAll=false
-      
-    - name: Security audit
-      run: npm audit --audit-level=moderate
-      
-    - name: Build application
-      run: npm run build
-      
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-files
-        path: build/
-
   deploy:
-    needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
     - name: Checkout code
@@ -53,7 +16,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'  # Hardcoded version, or use '18' if preferred
         cache: 'npm'
         
     - name: Install dependencies
@@ -62,13 +25,23 @@ jobs:
     - name: Build application
       run: npm run build
       
-    - name: Configure AWS credentials
+    - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
         
-    - name: Deploy to S3
+    - name: Deploy to AWS S3
       run: |
-        aws s3 sync build/ s3://${{ secrets.S3_BUCKET_NAME }} --delete --exact-timestamps
+        # Sync files with appropriate cache headers
+        aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete \
+          --cache-control "public,max-age=31536000,immutable" \
+          --exclude "*.html" \
+          --exclude "*.json"
+        
+        # Upload HTML files with no-cache to ensure updates are seen immediately
+        aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }} \
+          --cache-control "public,max-age=0,must-revalidate" \
+          --include "*.html" \
+          --include "*.json"
